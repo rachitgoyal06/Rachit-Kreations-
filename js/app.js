@@ -1,314 +1,210 @@
-// ==========================================
+// ============================================
+// RACHIT KREATIONS — app.js
+// ============================================
+
+// ============================================
 // PAGE LOADER
-// ==========================================
-
+// ============================================
 window.addEventListener("load", () => {
-
     const loader = document.getElementById("loader");
-
     if (loader) {
-
         loader.style.opacity = "0";
-
-        setTimeout(() => {
-
-            loader.style.display = "none";
-
-        }, 500);
-
+        setTimeout(() => loader.style.display = "none", 600);
     }
-
 });
 
-// ==========================================
-// SMOOTH SCROLL
-// ==========================================
+// ============================================
+// HAMBURGER MENU
+// ============================================
+const hamburger = document.getElementById("hamburger");
+const navLinks  = document.getElementById("navLinks");
 
-document.querySelectorAll('a[href^="#"]').forEach(link => {
+if (hamburger && navLinks) {
+    hamburger.addEventListener("click", () => {
+        hamburger.classList.toggle("open");
+        navLinks.classList.toggle("open");
+        document.body.style.overflow =
+            navLinks.classList.contains("open") ? "hidden" : "";
+    });
 
-    link.addEventListener("click", function (e) {
-
-        const target = document.querySelector(this.getAttribute("href"));
-
-        if (!target) return;
-
-        e.preventDefault();
-
-        target.scrollIntoView({
-
-            behavior: "smooth"
-
+    // Close on link click
+    navLinks.querySelectorAll("a").forEach(link => {
+        link.addEventListener("click", () => {
+            hamburger.classList.remove("open");
+            navLinks.classList.remove("open");
+            document.body.style.overflow = "";
         });
-
     });
 
-});
-
-// ==========================================
-// SCROLL REVEAL
-// ==========================================
-
-const hiddenElements = document.querySelectorAll(".hidden");
-
-const observer = new IntersectionObserver(entries => {
-
-    entries.forEach(entry => {
-
-        if (entry.isIntersecting) {
-
-            entry.target.classList.add("show");
-
+    // Close on outside click
+    document.addEventListener("click", (e) => {
+        if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+            hamburger.classList.remove("open");
+            navLinks.classList.remove("open");
+            document.body.style.overflow = "";
         }
-
     });
-
-}, {
-
-    threshold: .15
-
-});
-
-hiddenElements.forEach(el => observer.observe(el));
-
-// ==========================================
-// ACTIVE NAVBAR
-// ==========================================
-
-const sections = document.querySelectorAll("section");
-
-const navLinks = document.querySelectorAll(".nav-links a");
-
-window.addEventListener("scroll", () => {
-
-    let current = "";
-
-    sections.forEach(section => {
-
-        const sectionTop = section.offsetTop - 120;
-
-        const sectionHeight = section.clientHeight;
-
-        if (pageYOffset >= sectionTop) {
-
-            current = section.getAttribute("id");
-
-        }
-
-    });
-
-    navLinks.forEach(link => {
-
-        link.classList.remove("active");
-
-        if (link.getAttribute("href") === "#" + current) {
-
-            link.classList.add("active");
-
-        }
-
-    });
-
-});
-
-// ==========================================
-// BACK TO TOP BUTTON
-// ==========================================
-
-const topBtn = document.getElementById("topBtn");
-
-window.addEventListener("scroll", () => {
-
-    if (!topBtn) return;
-
-    if (window.scrollY > 400) {
-
-        topBtn.style.display = "flex";
-
-    } else {
-
-        topBtn.style.display = "none";
-
-    }
-
-});
-
-if (topBtn) {
-
-    topBtn.addEventListener("click", () => {
-
-        window.scrollTo({
-
-            top: 0,
-
-            behavior: "smooth"
-
-        });
-
-    });
-
 }
 
-// ==========================================
-// NAVBAR BACKGROUND
-// ==========================================
+// ============================================
+// SCROLL REVEAL
+// ============================================
+const hiddenEls = document.querySelectorAll(".hidden");
+const revealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add("show");
+        }
+    });
+}, { threshold: 0.12 });
 
-const navbar = document.querySelector(".navbar");
+hiddenEls.forEach(el => revealObserver.observe(el));
+
+// ============================================
+// ACTIVE NAVBAR HIGHLIGHT
+// ============================================
+const sections = document.querySelectorAll("section[id]");
+const navAnchors = document.querySelectorAll(".nav-links a");
 
 window.addEventListener("scroll", () => {
-
-    if (!navbar) return;
-
-    if (window.scrollY > 80) {
-
-        navbar.style.background = "rgba(255,255,255,.95)";
-
-        navbar.style.backdropFilter = "blur(20px)";
-
-    }
-
-    else {
-
-        navbar.style.background = "rgba(255,255,255,.25)";
-
-    }
-
-});
-
-// ==========================================
-// GALLERY FILTER
-// ==========================================
-
-const filterButtons = document.querySelectorAll(".gallery-filter button");
-
-filterButtons.forEach(button => {
-
-    button.addEventListener("click", () => {
-
-        filterButtons.forEach(btn =>
-
-            btn.classList.remove("active")
-
-        );
-
-        button.classList.add("active");
-
-        const filter = button.dataset.filter;
-
-        const cards = document.querySelectorAll(".gallery-card");
-
-        cards.forEach(card => {
-
-            if (
-
-                filter === "all" ||
-
-                card.dataset.category === filter
-
-            ) {
-
-                card.style.display = "block";
-
-            }
-
-            else {
-
-                card.style.display = "none";
-
-            }
-
-        });
-
+    let current = "";
+    sections.forEach(section => {
+        if (pageYOffset >= section.offsetTop - 140) {
+            current = section.getAttribute("id");
+        }
     });
-
+    navAnchors.forEach(a => {
+        a.classList.remove("active");
+        if (a.getAttribute("href") === "#" + current) {
+            a.classList.add("active");
+        }
+    });
 });
 
-// ==========================================
+// ============================================
+// HEADER SCROLL STYLE
+// ============================================
+const header = document.getElementById("header");
+window.addEventListener("scroll", () => {
+    if (!header) return;
+    header.classList.toggle("scrolled", window.scrollY > 60);
+});
+
+// ============================================
+// BACK TO TOP
+// ============================================
+const topBtn = document.getElementById("topBtn");
+window.addEventListener("scroll", () => {
+    if (!topBtn) return;
+    topBtn.style.display = window.scrollY > 400 ? "flex" : "none";
+});
+if (topBtn) {
+    topBtn.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+}
+
+// ============================================
+// COUNTER ANIMATION
+// ============================================
+function animateCounter(el) {
+    const target = +el.dataset.target;
+    const duration = 1800;
+    const step = target / (duration / 16);
+    let current = 0;
+
+    const timer = setInterval(() => {
+        current += step;
+        if (current >= target) {
+            el.textContent = target;
+            clearInterval(timer);
+        } else {
+            el.textContent = Math.floor(current);
+        }
+    }, 16);
+}
+
+const counterObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            animateCounter(entry.target);
+            counterObserver.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.5 });
+
+document.querySelectorAll(".stat-number").forEach(el => counterObserver.observe(el));
+
+// ============================================
+// GALLERY FILTER
+// ============================================
+const filterButtons = document.querySelectorAll(".gallery-filter button");
+filterButtons.forEach(button => {
+    button.addEventListener("click", () => {
+        filterButtons.forEach(btn => btn.classList.remove("active"));
+        button.classList.add("active");
+        const filter = button.dataset.filter;
+        document.querySelectorAll(".gallery-card").forEach(card => {
+            const match = filter === "all" || card.dataset.category === filter;
+            card.style.display = match ? "block" : "none";
+        });
+    });
+});
+
+// ============================================
 // IMAGE LIGHTBOX
-// ==========================================
-
+// ============================================
 document.addEventListener("click", function (e) {
-
-    const img = e.target.closest(".gallery-card img");
-
+    const img = e.target.closest(".gallery-card .zoom img");
     if (!img) return;
 
     const overlay = document.createElement("div");
-
-    overlay.style.position = "fixed";
-    overlay.style.top = "0";
-    overlay.style.left = "0";
-    overlay.style.width = "100%";
-    overlay.style.height = "100%";
-    overlay.style.background = "rgba(0,0,0,.85)";
-    overlay.style.display = "flex";
-    overlay.style.justifyContent = "center";
-    overlay.style.alignItems = "center";
-    overlay.style.zIndex = "9999";
-    overlay.style.cursor = "pointer";
+    overlay.className = "lightbox-overlay";
 
     const image = document.createElement("img");
-
     image.src = img.src;
-    image.style.maxWidth = "90%";
-    image.style.maxHeight = "90%";
-    image.style.borderRadius = "20px";
+    image.alt = img.alt;
 
     overlay.appendChild(image);
-
     document.body.appendChild(overlay);
+    document.body.style.overflow = "hidden";
 
     overlay.addEventListener("click", () => {
-
         overlay.remove();
-
+        document.body.style.overflow = "";
     });
 
+    // Keyboard close
+    const keyClose = (e) => {
+        if (e.key === "Escape") { overlay.remove(); document.body.style.overflow = ""; }
+        document.removeEventListener("keydown", keyClose);
+    };
+    document.addEventListener("keydown", keyClose);
 });
 
-// ==========================================
-// FLOATING BUTTON TOOLTIPS
-// ==========================================
-
-document.querySelectorAll(".call,.whatsapp").forEach(btn => {
-
-    btn.addEventListener("mouseenter", () => {
-
-        btn.style.transform = "scale(1.15)";
-
-    });
-
-    btn.addEventListener("mouseleave", () => {
-
-        btn.style.transform = "scale(1)";
-
-    });
-
-});
-
-// ==========================================
-// SIMPLE PARALLAX
-// ==========================================
-
+// ============================================
+// PARALLAX HERO
+// ============================================
 const hero = document.querySelector(".hero");
-
 window.addEventListener("scroll", () => {
-
     if (!hero) return;
-
-    hero.style.backgroundPositionY =
-
-        window.scrollY * 0.35 + "px";
-
+    hero.style.backgroundPositionY = window.scrollY * 0.3 + "px";
 });
 
-// ==========================================
-// YEAR (OPTIONAL)
-// ==========================================
+// ============================================
+// SMOOTH SCROLL (native fallback)
+// ============================================
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener("click", function (e) {
+        const target = document.querySelector(this.getAttribute("href"));
+        if (!target) return;
+        e.preventDefault();
+        target.scrollIntoView({ behavior: "smooth" });
+    });
+});
 
-const year = document.getElementById("year");
-
-if (year) {
-
-    year.textContent = new Date().getFullYear();
-
-}
+// ============================================
+// FOOTER YEAR
+// ============================================
+const yearEl = document.getElementById("year");
+if (yearEl) yearEl.textContent = new Date().getFullYear();
