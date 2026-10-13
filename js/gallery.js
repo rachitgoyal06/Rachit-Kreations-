@@ -1,6 +1,6 @@
 // ==========================================
-// RACHIT KREATIONS
-// GALLERY.JS
+// RACHIT KREATIONS — GALLERY.JS
+// supabaseClient is initialized in js/supabase.js
 // ==========================================
 
 const galleryGrid = document.getElementById("galleryGrid");
